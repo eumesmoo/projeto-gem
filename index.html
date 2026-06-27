@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO -->
+  <title>✨ Crystal Gem Ranking — Steven Universe × Undertale</title>
+  <meta name="description" content="Um teste definitivo de personalidade intergaláctica! Descubra quais Crystal Gems combinam com a sua alma." />
+
+  <!-- Favicon / Ícone da Aba -->
+  <link rel="icon" type="image/png" href="assets/img/ESCUDO.png" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ★ Star-field Canvas -->
+  <canvas id="star-canvas" aria-hidden="true"></canvas>
+
+  <!-- ★ Gradient overlay -->
+  <div id="bg-layer" aria-hidden="true"></div>
+
+  <!-- ★ Fusion Flash overlay (existente V3) -->
+  <div id="fusion-overlay" aria-hidden="true"></div>
+
+  <!-- ★ Audio Controls (top-right) -->
+  <div class="audio-controls" id="audio-controls">
+    <button class="audio-btn" id="btn-bgm" title="Música de fundo" aria-label="Alternar música">🎵</button>
+    <input  class="volume-slider" id="volume-slider" type="range" min="0" max="1" step="0.05" value="0.4" aria-label="Volume" />
+  </div>
+
+  <!-- ★ Conclusion overlay (sparkle explosion) -->
+  <div class="conclusion-overlay" id="conclusion-overlay" aria-hidden="true"></div>
+
+  <!-- ★ Lion Easter Egg Button (Melhoria 11A) -->
+  <button id="btn-lion" class="btn-lion" title="Leão" aria-label="Easter egg Leão">
+    <img src="assets/img/LEAO.png" id="lion-img" alt="Lion" />
+  </button>
+
+  <!-- ★ Achievement Toast (Melhoria 10) -->
+  <div id="achievement-toast" class="achievement-toast hidden" aria-hidden="true">
+    <div class="toast-content">
+      <span id="toast-icon" class="toast-icon">🏆</span>
+      <div class="toast-text">
+        <div id="toast-name" class="toast-name">Conquista</div>
+        <div class="toast-label">CONQUISTADO</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ★ Fusion Modal Overlay (Melhoria 7) -->
+  <div id="fusion-modal-overlay" class="modal-overlay hidden" aria-hidden="true">
+    <div class="fusion-card">
+      <div class="fusion-header">FUSÃO DETECTADA</div>
+      <div class="fusion-img-wrapper">
+        <img src="assets/img/GARNET.png" id="fusion-modal-img" alt="Fusão" />
+      </div>
+      <div class="fusion-name" id="fusion-modal-name">Garnet</div>
+      <div class="dialogue-box dialogue-box-sm fusion-dialogue">
+        <span class="narrator-label">NARRADOR</span>
+        <p class="dialogue-text" id="text-fusion-modal"></p>
+      </div>
+      <button class="action-btn visible" id="btn-fusion-continue">❤ CONTINUAR</button>
+    </div>
+  </div>
+
+  <!-- ★ Gem Diary Overlay (Melhoria 9) -->
+  <div id="gem-diary-overlay" class="modal-overlay hidden" aria-hidden="true">
+    <div class="diary-terminal">
+      <div class="diary-header">CRYSTAL GEM DATABASE — ACESSO NÍVEL 5</div>
+      <div class="diary-content" id="diary-content">
+        <!-- Injected by JS -->
+      </div>
+      <div class="diary-footer">
+        <button class="diary-btn" id="btn-close-diary">FECHAR ARQUIVO</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ★ Random Event Overlay (Melhoria 11D) -->
+  <div id="random-event-overlay" class="modal-overlay hidden" aria-hidden="true">
+    <div class="random-event-card">
+      <div class="dialogue-box random-dialogue">
+        <span class="narrator-label" id="random-event-speaker">SISTEMA</span>
+        <p class="dialogue-text" id="text-random-event"></p>
+      </div>
+      <div style="text-align:center;">
+        <button class="action-btn visible" id="btn-random-continue">❤ CONTINUAR</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============== APP =============== -->
+  <div id="app">
+
+    <!-- ===== STATE: LOADING (Melhoria 1) ===== -->
+    <section class="state active fade-in" id="state-loading">
+      <div class="loading-container">
+        <div class="loading-bar-wrapper">
+          <div class="loading-bar" id="loading-bar"></div>
+        </div>
+        <p class="loading-text" id="loading-text">Carregando dados da alma...</p>
+      </div>
+    </section>
+
+    <!-- ===== STATE: INTRO ===== -->
+    <section class="state" id="state-intro">
+
+      <!-- Cookie Cat Easter Egg -->
+      <button class="cookie-cat" id="cookie-cat" title="🐱🍪" aria-label="Easter egg">
+        <span class="cookie-cat-icon">🍪</span>
+      </button>
+
+      <!-- Splash / Logo -->
+      <div class="intro-splash">
+        <img src="assets/img/LOGO.png" alt="Steven Universe Logo" id="intro-logo" />
+        <span class="intro-subtitle">× UNDERTALE — GEM RANKING SYSTEM</span>
+      </div>
+
+      <!-- Dialogue -->
+      <div class="dialogue-container" id="dialogue-intro">
+        <div class="dialogue-box">
+          <span class="narrator-label">NARRADOR</span>
+          <p class="dialogue-text" id="text-intro"></p>
+        </div>
+        <div style="text-align:center;">
+          <button class="action-btn" id="btn-start">❤ SIM!</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== STATE: QUIZ ===== -->
+    <section class="state" id="state-quiz">
+      <div class="quiz-answers" id="quiz-answers"></div>
+      <div class="dialogue-container">
+        <div class="dialogue-box">
+          <span class="narrator-label">NARRADOR</span>
+          <p class="dialogue-text" id="text-quiz"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== STATE: RANKING ===== -->
+    <section class="state" id="state-ranking">
+
+      <!-- Mobile instruction hint -->
+      <div class="mobile-hint" id="mobile-hint">
+        <span>📱 Toque em uma Gem → Toque no pódio para colocar</span>
+      </div>
+
+      <div class="ranking-layout">
+        <!-- Podium (sticky on mobile) -->
+        <div class="podium-wrapper" id="podium-wrapper">
+          <div class="podium" id="podium">
+            <div class="pedestal pedestal-gold" data-slot="1" id="pedestal-1">
+              <span class="pedestal-rank">1º</span>
+              <span class="pedestal-label">A Favorita</span>
+            </div>
+            <div class="pedestal pedestal-silver" data-slot="2" id="pedestal-2">
+              <span class="pedestal-rank">2º</span>
+              <span class="pedestal-label">Lugar</span>
+            </div>
+            <div class="pedestal pedestal-bronze" data-slot="3" id="pedestal-3">
+              <span class="pedestal-rank">3º</span>
+              <span class="pedestal-label">Lugar</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gem Grid -->
+        <div class="gem-grid" id="gem-grid">
+          <!-- Gems injected by JS -->
+        </div>
+      </div>
+
+      <!-- Bottom dialogue + confirm -->
+      <div class="ranking-bottom">
+        <div class="dialogue-container">
+          <div class="dialogue-box dialogue-box-sm">
+            <span class="narrator-label">NARRADOR</span>
+            <p class="dialogue-text" id="text-ranking"></p>
+          </div>
+        </div>
+        <div style="text-align:center;">
+          <button class="action-btn" id="btn-confirm">❤ CONFIRMAR</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== STATE: CONFIRM / JOKE ===== -->
+    <section class="state" id="state-confirm">
+      <div class="dialogue-container">
+        <div class="dialogue-box">
+          <span class="narrator-label">NARRADOR</span>
+          <p class="dialogue-text" id="text-confirm"></p>
+        </div>
+        <div style="text-align:center;">
+          <button class="action-btn" id="btn-send">❤ ENVIAR</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== STATE: OUTRO (RPG RESULT & CREATOR MESSAGE) ===== -->
+    <section class="state" id="state-outro">
+      <div class="outro-scroll-area">
+        <div class="rpg-result-container fade-in-up" id="rpg-result-container">
+          <div class="rpg-result-card">
+            <div class="rpg-header">✦ ANÁLISE DA ALMA CONCLUÍDA ✦</div>
+            <div class="rpg-body">
+              <div class="rpg-main-gem">
+                <div class="rpg-gem-img-box">
+                  <img src="assets/img/GARNET.png" id="rpg-gem-img" alt="Gem Principal" />
+                </div>
+                <div class="rpg-gem-info">
+                  <div class="rpg-gem-label">GEM PRINCIPAL: <span id="rpg-gem-name">Garnet</span></div>
+                  <div class="rpg-gem-compat">COMPATIBILIDADE: <span id="rpg-gem-percent">100%</span></div>
+                  <div class="rpg-gem-title" id="rpg-gem-title">"A Fundação das Crystal Gems"</div>
+                </div>
+              </div>
+              <div class="rpg-attrs-section">
+                <div class="rpg-attrs-header">──── ATRIBUTOS DA ALMA ────</div>
+                <div class="rpg-attrs-list" id="rpg-attrs-list">
+                  <!-- Injected by JS -->
+                </div>
+              </div>
+              <div class="rpg-gem-desc" id="rpg-gem-desc">
+                <!-- Injected by JS -->
+              </div>
+              <div class="rpg-actions">
+                <button class="action-btn visible" id="btn-view-diary">❤ VER ARQUIVO DA GEM</button>
+                <button class="action-btn visible" id="btn-share-result">❤ COMPARTILHAR RESULTADO</button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Creator Message Dialogue Box (Melhoria 13) -->
+          <div class="dialogue-container fade-in-up" id="dialogue-creator" style="display: none; margin: 1.5rem auto;">
+            <div class="dialogue-box" id="box-creator" style="cursor: pointer;">
+              <span class="narrator-label">NARRADOR</span>
+              <p class="dialogue-text" id="text-creator">( ✨ Clique aqui para ver a mensagem especial do Criador ✨ )</p>
+            </div>
+          </div>
+          
+          <!-- Top 5 remaining gems -->
+          <div class="rpg-other-gems-wrapper">
+            <div class="rpg-other-title">OUTRAS COMPATIBILIDADES</div>
+            <div class="rpg-other-gems" id="rpg-other-gems">
+              <!-- Injected by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /app -->
+
+  <script src="script.js"></script>
+</body>
+</html>
