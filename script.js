@@ -609,7 +609,7 @@ const SCRIPT = {
   intro: [
     "Olá...",
     "Eu sou o Narrador.",
-    "O Criador deste sistema me disse que você adora Crystal Gems.",
+    "O Criador deste sistema me disse que você adora Steven Universo.",
     "Ele também me implorou para preparar algo especial...",
     "Um teste definitivo de personalidade intergaláctica!",
     "Você está pronta?"
